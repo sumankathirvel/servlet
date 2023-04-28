@@ -1,0 +1,33 @@
+import java.io.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
+
+public class LoginServlet extends HttpServlet {
+  
+  private static final long serialVersionUID = 1L;
+  private static final String USERNAME = "myuser";
+  private static final String PASSWORD = "mypassword";
+  
+  public void doPost(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
+    
+    // Get username and password from the request parameters
+    String username = request.getParameter("username");
+    String password = request.getParameter("password");
+    
+    if (USERNAME.equals(username) && PASSWORD.equals(password)) {
+      // Login successful, create a cookie with the username and set its expiry time
+      Cookie cookie = new Cookie("username", username);
+      cookie.setMaxAge(60 * 60 * 24 * 30); // 30 days
+      response.addCookie(cookie);
+      
+      // Redirect to the home page
+      response.sendRedirect("home.jsp");
+    } else {
+      // Login failed, show an error message
+      request.setAttribute("errorMessage", "Invalid username or password");
+      RequestDispatcher rd = request.getRequestDispatcher("login.jsp");
+      rd.forward(request, response);
+    }
+  }
+}
